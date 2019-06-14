@@ -34,3 +34,4 @@
     interfaces:
       - int_subnet
   with_dict: "{{ osp_router }}"
+  ignore_errors: yes
