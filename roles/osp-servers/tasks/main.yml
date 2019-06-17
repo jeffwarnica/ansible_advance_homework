@@ -1,5 +1,4 @@
 ---
-
 # tasks file for osp.servers
 - name: Create new server instances and attaches them a network and passes metadata to the instance
   os_server:
@@ -51,5 +50,3 @@
   loop_control:
     label: "{{ item.item.value.name }}"
   delegate_to: "{{ inventory_hostname }}"
-
-  About
