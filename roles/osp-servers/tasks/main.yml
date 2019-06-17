@@ -18,7 +18,7 @@
       curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
       cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
     timeout: "200"
-  loop: "{{ instances }}"
+  loop: "{{ osp_servers }}"
   register: provisioned_instances
   tags: provision
 
@@ -28,7 +28,7 @@
     network: "{{ item.ext_network }}"
     fixed_address: "{{ provisioned_instances.results[0].openstack.addresses.int_network[0].addr }}"
     wait: "yes"
-  loop: "{{ instances }}"
+  loop: "{{ osp_servers }}"
   register: provisioned_fips
   tags: floating_ips
 
