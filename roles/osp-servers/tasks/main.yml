@@ -3,38 +3,53 @@
 # tasks file for osp.servers
 - name: Create new server instances and attaches them a network and passes metadata to the instance
   os_server:
-    name: "{{ item.name }}"
-    image: "{{ item.image }}"
-    key_name: "{{ item.key_name }}"
-    meta: "{{ item.meta}}"
-    flavor: "{{ item.flavor }}"
-    security_groups: "{{ item.security_group }}"
-    network: "int_network"
-    auto_ip: "no"
-    user_data: |
+    cloud: ospcloud
+    state: "{{ item.value.state }}"
+    name: "{{ item.value.name }}"
+    flavor: "{{ item.value.flavor }}"
+    key_name: "{{ item.value.key_name }}"
+    image: "{{ item.value.image }}"
+    network: int_network
+    security_groups: "{{ item.value.security_group }}"
+    meta:
+      deployment_name: "{{ item.value.meta.0.deployment_name }}"
+      group: "{{ item.value.meta.0.group }}"
+    userdata: |
       #!/bin/bash
       curl -o /tmp/openstack.pub http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/openstack.pub
       cat /tmp/openstack.pub >> /home/cloud-user/.ssh/authorized_keys
       curl -o /tmp/internal.repo http://www.opentlc.com/download/ansible_bootcamp/repo/internal.repo
       cp /tmp/internal.repo /etc/yum.repos.d/internal.repo
-    timeout: "200"
-  loop: "{{ osp_servers }}"
-  register: provisioned_instances
-  tags: provision
+  with_dict: "{{ osp_servers }}"
+  loop_control:
+    label: "{{ item.value.name }}"
+  register: vm
 
-- name: Provision Floating IP's
+- name: Add floating IP to Servers
   os_floating_ip:
-    server: "{{ item.name }}"
-    network: "{{ item.ext_network }}"
-    fixed_address: "{{ provisioned_instances.results[0].openstack.addresses.int_network[0].addr }}"
-    wait: "yes"
-  loop: "{{ osp_servers }}"
-  register: provisioned_fips
-  tags: floating_ips
+    cloud: ospcloud
+    state: present
+    server: "{{ item.value.name }}"
+    network: ext_network
+  with_dict: "{{ osp_servers }}"
+  loop_control:
+    label: "{{ item.value.name }}"
+  register: vmFloatingIP
 
-- wait_for_connection:
-  register: instance_connection_state
-  tags: instance_ssh_state
+- name: Show floating (public) IP
+  debug:
+    msg: "Server name: {{ vm.results.0.server.name  }}; configured IP: {{ vmFloatingIP.results.0.floating_ip.floating_ip_address }}"
+  ignore_errors: yes
 
-   
+- name: Wait for servers to be available
+  wait_for:
+    host: "{{ item.floating_ip.floating_ip_address }}"
+    port: 22
+    search_regex: OpenSSH
+    timeout: 600
+  with_items: "{{ vmFloatingIP.results }}"
+  loop_control:
+    label: "{{ item.item.value.name }}"
+  delegate_to: "{{ inventory_hostname }}"
 
+  About
