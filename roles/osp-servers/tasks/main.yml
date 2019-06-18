@@ -29,9 +29,9 @@
     cloud: ospcloud
     action: start
   with_dict: "{{ osp_servers }}"
-    loop_control:
-      label: "{{ item.value.name }}"
-      
+  loop_control:
+    label: "{{ item.value.name }}"
+
 - name: Add floating IP to Servers
   os_floating_ip:
     cloud: ospcloud
