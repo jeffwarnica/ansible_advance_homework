@@ -22,7 +22,8 @@
     name: Connect_to_workstation
     state: present
     kind: ssh
-    ssh_key_data: "/root/.ssh/openstack.pem"
+#    ssh_key_data: /root/.ssh/openstack.pem
+    ssh_key_data: /root/.ssh/mykey.pem
     username: cloud-user
   ignore_errors: true
 
