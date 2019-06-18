@@ -18,6 +18,7 @@
     tower_username: admin
     tower_password: r3dh4t1!
     tower_verify_ssl: no
+    organization: Default
     name: Connect_to_workstation
     state: present
     kind: ssh
