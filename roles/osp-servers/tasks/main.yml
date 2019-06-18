@@ -28,6 +28,7 @@
   os_server_action:
     cloud: ospcloud
     action: start
+    server: "{{ item.value.name }}"
   with_dict: "{{ osp_servers }}"
   loop_control:
     label: "{{ item.value.name }}"
