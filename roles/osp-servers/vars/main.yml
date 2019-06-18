@@ -3,7 +3,7 @@
 osp_servers:
   frontend:
     name: frontend
-    state: present
+    state: running
     image: rhel-guest
     key_name: ansible_ssh
     flavor: m2.small
@@ -12,7 +12,7 @@ osp_servers:
       - { group: frontends, deployment_name: QA}
   app1:
     name: app1
-    state: present
+    state: running
     image: rhel-guest
     key_name: ansible_ssh
     flavor: m2.small
@@ -21,7 +21,7 @@ osp_servers:
       - { group: apps, deployment_name: QA}
   app2:
     name: app2
-    state: present
+    state: running
     image: rhel-guest
     key_name: ansible_ssh
     flavor: m2.small
@@ -30,7 +30,7 @@ osp_servers:
       - { group: apps, deployment_name: QA}
   db:
     name: db
-    state: present
+    state: running
     image: rhel-guest
     key_name: ansible_ssh
     flavor: m2.small
