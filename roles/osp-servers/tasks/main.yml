@@ -25,7 +25,7 @@
   register: vm
 
 - name: Ensure instances are running
-  os_server_actions:
+  os_server_action:
     cloud: ospcloud
     action: start
   with_dict: "{{ osp_servers }}"
