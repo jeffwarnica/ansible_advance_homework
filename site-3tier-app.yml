@@ -22,7 +22,7 @@
 # Setup database tier
 - name: setup database tier
   become: yes
-  hosts: appdb
+  hosts: appdbs
   roles:
     - {name: base-config, tags: base-config}
     - {name: db-tier, tags: [dbs, postgres]}
