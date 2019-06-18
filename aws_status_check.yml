@@ -1,4 +1,4 @@
-- hosts: tag_instance_filter_three_tier_app_*jwarnica*
+- hosts: tag_instance_filter_three_tier_app_jwarnica*
   gather_facts: false
   tasks:
   - name: Check the instances status
