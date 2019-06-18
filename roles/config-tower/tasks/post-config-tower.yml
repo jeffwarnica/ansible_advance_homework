@@ -39,19 +39,6 @@
     ssh_key_data: /root/.ssh/mykey.pem
     username: "{{ opentlc_login }}"
 
-- name: Tower Connect_to_workstation key file
-  tower_credential:
-    tower_host: tower1.{{tower_GUID}}.example.opentlc.com
-    tower_username: admin
-    tower_password: r3dh4t1!
-    tower_verify_ssl: no
-    organization: Default
-    name: "{{ opentlc_cred_name }}"
-    state: present
-    kind: ssh
-    ssh_key_data: /root/.ssh/openstack.pem
-    username: cloud-user
-
 
 - name: Create Inventory
   command: |
