@@ -1,23 +1,24 @@
 - hosts: workstation
+  remote_user: cloud-user
+  become: yes
   gather_facts: false
   tasks:
-  - name: OpenStack servers
-    os_server_facts:
-     cloud: ospcloud
-     server: 'frontend'
-    register: openstack_info
-    tags:
-      - osp.smoke
-  - name: Curl website
-    uri:
-      url: "http://{{item.public_v4}}"
-      return_content: yes
-    loop: "{{openstack_info.ansible_facts.openstack_servers}}"
-    register: haproxy_status
-    tags:
-      - osp.smoke
-  - name: Fail if 'Ansible has done its job' is not in the page content
-    fail:
-    when: "'Ansible has done its job' not in webpage.results[0].content"
-    tags:
-      - osp.smoke
+    - name: OpenStack servers
+      os_server_facts:
+        cloud: ospcloud
+        server: 'frontend'
+      register: openstack_info
+      tags:
+        - osp.smoke
+    - name: print out the openstack_info var
+      debug:
+        var: openstack_info
+        verbosity: 2
+    - name: Fail if 'Ansible has done its job' is not in the page content
+      uri:
+        url: "http://{{ openstack_info.ansible_facts.openstack_servers[0].interface_ip }}"
+        return_content: yes
+      register: data
+      failed_when: "'Ansible has done its job' not in data.content"
+      tags:
+        - osp.smoke
