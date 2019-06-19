@@ -55,4 +55,3 @@
         playbook: site-smoketest-aws.yml
         project: "Homework Assignment"
 
-    
