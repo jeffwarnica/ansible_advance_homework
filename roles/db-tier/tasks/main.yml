@@ -5,18 +5,23 @@
     name: "{{ db_tier_packages }}"
     state: latest
 
-- name: block to check state of database initialisation
-  block:
-    # Task to check whether of not the database has been initialised
-    - name: check that the database was successfully initialised
-      command: "/usr/bin/postgresql-check-db-dir {{ db_tier_dir }}"
-  rescue:
-    - name: init check failed therefore initialising
-      command: postgresql-setup initdb
-
-- name: enable and start {{ db_tier_service }}
+- name: Enable Postgres at boot
   service:
-    name: "{{ db_tier_service }}"
-    state: started
+    name: postgresql
     enabled: yes
 
+- name: Check if PostgreSQL database is initialized.
+  stat:
+    path: "/var/lib/pgsql/data/PG_VERSION"
+  register: pgdata_dir_version
+
+- name: initilize postgres
+  command: postgresql-setup initdb
+  when: not pgdata_dir_version.stat.exists
+
+- name: initilize postgres some more
+  command: chkconfig postgresql on
+- name: start postgres
+  service:
+    name: postgresql.service
+    state: started
