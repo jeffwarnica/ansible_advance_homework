@@ -1,6 +1,8 @@
 # Homework
 
-## Basic Requirements sections
+This project is at https://github.com/jeffwarnica/ansible_advance_homework
+
+## Basic Requirements
 
 RHC was engaged by MitziCom to provide a sample CI/CD pipeline with Ansible and Ansible tower
 for provisioning a new web application.
