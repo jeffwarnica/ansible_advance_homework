@@ -1,0 +1,22 @@
+---
+# tasks file for db-tier
+- name: install {{ db_tier_packages }}
+  yum:
+    name: "{{ db_tier_packages }}"
+    state: latest
+
+- name: block to check state of database initialisation
+  block:
+    # Task to check whether of not the database has been initialised
+    - name: check that the database was successfully initialised
+      command: "/usr/bin/postgresql-check-db-dir {{ db_tier_dir }}"
+  rescue:
+    - name: init check failed therefore initialising
+      command: postgresql-setup initdb
+
+- name: enable and start {{ db_tier_service }}
+  service:
+    name: "{{ db_tier_service }}"
+    state: started
+    enabled: yes
+

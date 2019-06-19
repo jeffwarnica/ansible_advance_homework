@@ -1,0 +1,5 @@
+---
+# vars file for db-tier
+db_tier_packages: postgresql-server
+db_tier_service: postgresql.service
+db_tier_dir: /var/lib/pgsql/data
